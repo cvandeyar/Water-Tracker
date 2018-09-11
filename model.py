@@ -42,7 +42,7 @@ class Water_intake(db.Model):
     # def time_entered(self):
     #     return time_updated.astimezone(pytz.timezone('US/Pacific'))
 
-    user = db.relationship('User', backref='water_intakes')
+    user = db.relationship('User', backref='water_intake')
 
     def __repr__(self):
 
