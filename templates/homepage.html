@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<h1>Water Intake</h1>
+<img src="https://images.pexels.com/photos/33263/highspeed-photography-water-drop-of-water-alien-dance.jpg?auto=compress&cs=tinysrgb&h=350">
+
+<form action='/user-profile' method='POST'>
+    <div>
+        <lable>Email: 
+            <input type="email" name="email" required>
+        </lable><br>
+    </div>
+
+    <div>
+        <lable>Password: 
+            <input type="Password" name="Password" required>
+        </lable>
+    </div>
+
+    <div>
+        <input type="submit" name="Log In">
+    </div>
+
+</form>
+
+<!-- <p><a href="http://fellowship.hackbrightacademy.com/">testing</a></p> -->
+
+
+{% endblock %}
