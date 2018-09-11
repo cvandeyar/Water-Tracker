@@ -1,6 +1,9 @@
 """Models and database functions for Water Tracker project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from time import localtime
+import pytz
 
 db = SQLAlchemy()
 
@@ -32,13 +35,18 @@ class Water_intake(db.Model):
     __tablename__= "water_intakes"
 
     water_intake_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    time = db.Column(db.DateTime, nullable=False)
+    time_updated = db.Column(db.DateTime, default=datetime.now())
     amount_drank = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
+    # def time_entered(self):
+    #     return time_updated.astimezone(pytz.timezone('US/Pacific'))
+
+    user = db.relationship('User', backref='water_intakes')
+
     def __repr__(self):
 
-        return f"<Water_intake water_intake_id={self.water_intake_id} time={self.time} amount_drank={self.amount_drank} user_id={self.user_id}>"  
+        return f"<Water_intake water_intake_id={self.water_intake_id} time_updated={self.time_updated} amount_drank={self.amount_drank} user_id={self.user_id}>"  
 
 
 class Bathroom_use(db.Model):
@@ -50,6 +58,8 @@ class Bathroom_use(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+
+    user = db.relationship('User', backref='bathroom_use')
 
     def __repr__(self):
 
