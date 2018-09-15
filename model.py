@@ -48,7 +48,7 @@ class Water(db.Model):
 
     def __repr__(self):
 
-        return f"<Water_intake water_intake_id={self.water_intake_id} time_updated={self.time_updated} amount_drank={self.amount_drank} user_id={self.user_id}>"  
+        return f"<Water_intake water_intake_id={self.water_intake_id} time_updated={self.time_updated} ounces={self.ounces} user_id={self.user_id}>"  
 
 
 # class Bathroom(db.Model):
