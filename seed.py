@@ -60,7 +60,7 @@ def set_val_user_id():
 
     # Set the value for the next user_id to be max_id + 1
     query = "SELECT setval('users_user_id_seq', :new_id)"
-    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.execute(query, {'new_id': max_id})
     db.session.commit()
 
 if __name__ == "__main__":
@@ -73,4 +73,5 @@ if __name__ == "__main__":
     water_filename = 'seed_data/u.water'
     load_users()
     load_water()
+    set_val_user_id()
     # load_bathroom()
