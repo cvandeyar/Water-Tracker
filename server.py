@@ -18,7 +18,7 @@ app.jinja_env.undefined = StrictUndefined
 
 
 @app.route('/')
-def homepage():
+def index():
     """Homepage"""
     # do i want to just login on this page? or a button that you clicked called login that redirects to a login page?
 

@@ -1,5 +1,3 @@
-"""Models and database functions for Water Tracker project."""
-
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from time import localtime
@@ -29,41 +27,45 @@ class User(db.Model):
 
         return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} gender={self.gender} email={self.email} password={self.password}>"
 
-class Water_intake(db.Model):
+class Water(db.Model):
     """Water intake of water intake website"""
 
-    __tablename__= "water_intakes"
+    __tablename__= "water_consumption"
 
     water_intake_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     time_updated = db.Column(db.DateTime, default=datetime.now())
-    amount_drank = db.Column(db.Integer, nullable=False)
+    ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     # def time_entered(self):
     #     return time_updated.astimezone(pytz.timezone('US/Pacific'))
 
-    user = db.relationship('User', backref='water_intake')
+    user = db.relationship('User', backref='water')
+
+    # def convert_timezone(self):
+    #     time_updated = self.time_updated.astimezone(pytz.timezone('US/Pacific')).ctime()
+    #     return time_updated
 
     def __repr__(self):
 
         return f"<Water_intake water_intake_id={self.water_intake_id} time_updated={self.time_updated} amount_drank={self.amount_drank} user_id={self.user_id}>"  
 
 
-class Bathroom_use(db.Model):
-    """Bathroom use of water intake website"""
+# class Bathroom(db.Model):
+#     """Bathroom use of water intake website"""
 
-    __tablename__= "bathroom_use"
+#     __tablename__= "bathroom_use"
 
-    bathroom_use_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    time = db.Column(db.DateTime, nullable=False)
-    color = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+#     bathroom_use_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     time = db.Column(db.DateTime, default=datetime.now())
+#     color = db.Column(db.Integer, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-    user = db.relationship('User', backref='bathroom_use')
+#     user = db.relationship('User', backref='bathroom')
 
-    def __repr__(self):
+#     def __repr__(self):
 
-        return f"<Bathroom_use bathroom_use_id={self.bathroom_use_id} time={self.time} color={self.color} user_id={self.user_id}>"
+#         return f"<Bathroom_use bathroom_use_id={self.bathroom_use_id} time={self.time} color={self.color} user_id={self.user_id}>"
 
 
 #################################################
