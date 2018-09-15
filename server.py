@@ -40,7 +40,9 @@ def login():
 def new_user():
     """new user creates profile"""
 
-
+# @app.route('some route')
+def calculate_user_intake():
+    
 
 
 
