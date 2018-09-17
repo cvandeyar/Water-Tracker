@@ -6,7 +6,6 @@ import pytz
 db = SQLAlchemy()
 
 
-
 # Model definitions
 
 class User(db.Model):
@@ -48,8 +47,11 @@ class Water(db.Model):
 
     def __repr__(self):
 
-        return f"<Water_intake water_intake_id={self.water_intake_id} time_updated={self.time_updated} ounces={self.ounces} user_id={self.user_id}>"  
-
+        return f"""<Water_intake 
+        water_intake_id={self.water_intake_id} 
+        time_updated={self.time_updated} 
+        ounces={self.ounces} 
+        user_id={self.user_id}>"""
 
 # class Bathroom(db.Model):
 #     """Bathroom use of water intake website"""
@@ -80,8 +82,6 @@ def connect_to_db(app):
     db.init_app(app)
 
 if __name__ == "__main__":
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
 
     from server import app
 

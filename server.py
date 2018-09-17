@@ -2,20 +2,16 @@
 
 from jinja2 import StrictUndefined
 from flask import (Flask, render_template, redirect, request, session)
+import math
 # from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db
 
 
 app = Flask(__name__)
 
-# Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABCD123456"
 
-# Normally, if you use an undefined variable in Jinja2, it fails
-# silently. This is horrible. Fix this so that, instead, it raises an
-# error.
 app.jinja_env.undefined = StrictUndefined
-
 
 @app.route('/')
 def index():
@@ -24,26 +20,52 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/user-profile', methods=['POST'])
-def user_profile():
-    """Shows user profile after they login. Includes previous stats, shows goal for the day, how much they have left to drink to meet their goal"""
+# @app.route('/new_user')
+# def new_user():
 
-    return render_template("user-profile.html")
 
-@app.route('/login')
-def login():
-    """Login page
-        user gets sent here to login into their profile
-    """
+@app.route('/register', methods=['GET'])
+def register_form():
+    """Show form for user signup."""
 
-@app.route('/new-user')
-def new_user():
-    """new user creates profile"""
+    return render_template("register_form.html")
 
-# @app.route('some route')
-def calculate_user_intake():
+
+@app.route('/register', methods=['POST'])
+def register_process():
+    """Process registration."""
+
+    # Get form variables
+    email = request.form["email"]
+    password = request.form["password"]
+    age = int(request.form["age"])
+    zipcode = request.form["zipcode"]
+
+    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    flash(f"User {email} added.")
+    return redirect(f"/users/{new_user.user_id}")
+
+
+
+
+
+
+
+
+
+
+
+def calculate_user_intake(weight, age):
+    """calculates how much user needs to be drinking""" 
     
-
+    need_to_drink = round(((weight/2.2)*age)/28.3,2)
+    num_cups = math.ceil(need_to_drink/8)
+        
+    return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
 
 
 
