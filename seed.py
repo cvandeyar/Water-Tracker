@@ -13,9 +13,9 @@ def load_users():
     for row in open(user_filename):
         row = row.rstrip()
 
-        user_id, fname, lname, weight, age, gender, email, password = row.split('|')
+        user_id, fname, lname, weight, age, email, password = row.split('|') #gender
 
-        user = User(user_id=user_id, fname=fname, lname=lname, weight=weight, age=age, gender=gender, email=email, password=password)
+        user = User(user_id=user_id, fname=fname, lname=lname, weight=weight, age=age, email=email, password=password) #gender=gender
 
         db.session.add(user)
 

@@ -1,10 +1,10 @@
 """Water Tracker"""
 
 from jinja2 import StrictUndefined
-from flask import (Flask, render_template, redirect, request, session)
+from flask import Flask, render_template, redirect, request, session, flash
 import math
 # from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db
+from model import connect_to_db, db, User, Water
 
 
 app = Flask(__name__)
@@ -16,12 +16,8 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage"""
-    # do i want to just login on this page? or a button that you clicked called login that redirects to a login page?
 
     return render_template("homepage.html")
-
-# @app.route('/new_user')
-# def new_user():
 
 
 @app.route('/register', methods=['GET'])
@@ -35,19 +31,64 @@ def register_form():
 def register_process():
     """Process registration."""
 
-    # Get form variables
+    fname = request.form["fname"]
+    lname = request.form["fname"]
+    weight = int(request.form["weight"])
+    age = int(request.form["age"])
+    # gender = request.form["gender"]
     email = request.form["email"]
     password = request.form["password"]
-    age = int(request.form["age"])
-    zipcode = request.form["zipcode"]
+    # zipcode = request.form["zipcode"]
 
-    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+    new_user = User(fname=fname, lname=lname, weight=weight, age=age, email=email, password=password) #gender=gender
 
     db.session.add(new_user)
     db.session.commit()
 
-    flash(f"User {email} added.")
-    return redirect(f"/users/{new_user.user_id}")
+    ############change the flash to a javascript alert 2nd sprint#########
+    flash(f"User {email} added")
+    return redirect('/')
+    # return redirect(f"/users/{new_user.user_id}")
+
+@app.route('/login', methods=['GET'])
+def login_form():
+    """Show login form."""
+
+    return render_template("login_form.html")
+
+
+@app.route('/login', methods=['POST'])
+def login_process():
+    """Process login."""
+
+    email = request.form["email"]
+    password = request.form["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+
+    ############maybe do some AJAX here for sprint 2 so don't have to redirect so much############
+    if not user:
+        flash("No such user")
+        return redirect("/login")
+
+    if user.password != password:
+        flash("Incorrect password")
+        return redirect("/login") 
+
+    session["user_id"] = user.user_id
+
+    flash("Logged in")
+    return redirect(f"/users/{user.user_id}")
+
+
+@app.route('/logout')
+def logout():
+    """Log out."""
+
+    del session["user_id"]
+    flash("Logged Out.")
+    return redirect("/")
 
 
 

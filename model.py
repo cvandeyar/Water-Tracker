@@ -18,13 +18,13 @@ class User(db.Model):
     lname = db.Column(db.String(100), nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.String(10), nullable=False)
+    # gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
 
-        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} gender={self.gender} email={self.email} password={self.password}>"
+        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} email={self.email} password={self.password}>" #gender={self.gender} 
 
 class Water(db.Model):
     """Water intake of water intake website"""
