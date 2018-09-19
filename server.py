@@ -1,8 +1,13 @@
 """Water Tracker"""
 
+from sqlalchemy import func
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, session, flash
 import math
+
+from datetime import datetime
+from time import localtime
+import pytz
 # from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Water
 
@@ -90,7 +95,26 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
+# @app.route("/users/<int:user_id>")
+# def user_detail(user_id):
+#     """Show info about user."""
 
+#     user = User.query.get(user_id)
+#     # return render_template("user.html", user=user)
+#     print(f"User is {repr(user)}")
+#     return f"User is {repr(user)}"
+
+@app.route('/app_page')
+def app_page():
+    """this is the app"""
+
+    user = session["user_id"]
+    total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user).scalar() #how much they've drank in general
+    current_time = datetime.now().astimezone(pytz.timezone('US/Pacific'))
+    current_date = current_time.date()
+    total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user, Water.time_updated >= current_date).scalar()
+
+    return f"total {total}. <br> current date {current_date}. <br> total water {total_water_today}"
 
 
 

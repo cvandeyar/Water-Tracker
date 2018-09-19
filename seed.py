@@ -55,11 +55,21 @@ def set_val_user_id():
     """Set value for the next user_id after seeding database"""
 
     # Get the Max user_id in the database
-    result = db.session.query(func.max(User.user_id)).one()
-    max_id = int(result[0])
-
+    max_id = db.session.query(func.max(User.user_id)).scalar() 
+    
     # Set the value for the next user_id to be max_id + 1
     query = "SELECT setval('users_user_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id})
+    db.session.commit()
+
+def set_val_water_id():
+    """Set value for the next user_id after seeding database"""
+
+    # Get the Max user_id in the database
+    max_id = db.session.query(func.max(Water.water_intake_id)).scalar() 
+    
+    # Set the value for the next user_id to be max_id + 1
+    query = "SELECT setval('water_consumption_water_intake_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id})
     db.session.commit()
 
@@ -74,4 +84,5 @@ if __name__ == "__main__":
     load_users()
     load_water()
     set_val_user_id()
+    set_val_water_id()
     # load_bathroom()
