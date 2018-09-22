@@ -9,7 +9,7 @@ from datetime import datetime
 from time import localtime
 import pytz
 # from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User, Water
+from model import connect_to_db, db, User, Water, calculate_user_intake
 
 
 app = Flask(__name__)
@@ -23,13 +23,13 @@ app.jinja_env.undefined = StrictUndefined
 #######################I want to import this function from my model file
 
 
-def calculate_user_intake(weight, age):
-    """calculates how much user needs to be drinking""" 
+# def calculate_user_intake(weight, age):
+#     """calculates how much user needs to be drinking""" 
     
-    need_to_drink = round(((weight/2.2)*age)/28.3,2)
-    # num_cups = math.ceil(need_to_drink/8)
+#     need_to_drink = round(((weight/2.2)*age)/28.3,2)
+#     # num_cups = math.ceil(need_to_drink/8)
      
-    return need_to_drink
+#     return need_to_drink
 ###############################
 
 
@@ -144,18 +144,17 @@ def app_page():
     current_time = datetime.now().astimezone(pytz.timezone('US/Pacific'))
     current_date = current_time.date()
 
-
     total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
 
     if total_water_today != None:
-        total_cups_today = math.ceil(total_water_today/8)
+        total_cups_today = round((total_water_today/8),2)
     else:
         total_water_today = 0
         total_cups_today = 0
 
     user = User.query.filter_by(user_id=user_id).first()
     user_goal_oz = calculate_user_intake(user.weight, user.age)
-    user_goal_cups = math.ceil(user_goal_oz/8)
+    user_goal_cups = round((user_goal_oz/8),2)
 
 
     # session["user_goal"] = goal
@@ -180,18 +179,6 @@ def add_water():
     db.session.commit()
 
     return redirect('/app_page')
-
-
-
-
-# def calculate_user_intake(weight, age):
-#     """calculates how much user needs to be drinking""" 
-    
-#     need_to_drink = round(((weight/2.2)*age)/28.3,2)
-#     num_cups = math.ceil(need_to_drink/8)
-        
-#     return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
-
 
 
 if __name__ == "__main__":
