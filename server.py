@@ -79,11 +79,11 @@ def register_process():
     return redirect('/')
     # return redirect(f"/users/{new_user.user_id}")
 
-@app.route('/login', methods=['GET'])
-def login_form():
-    """Show login form."""
+# @app.route('/login', methods=['GET'])
+# def login_form():
+#     """Show login form."""
 
-    return render_template("login_form.html")
+#     return render_template("login_form.html")
 
 
 @app.route('/login', methods=['POST'])
@@ -130,7 +130,6 @@ def logout():
 
     del session["user_id"]
     del session["user_fname"]
-    del session["user_goal"]
     flash("Logged Out.")
     return redirect("/")
 
@@ -144,8 +143,15 @@ def app_page():
     total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user_id).scalar() #how much they've drank in general
     current_time = datetime.now().astimezone(pytz.timezone('US/Pacific'))
     current_date = current_time.date()
+
+
     total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
-    total_cups_today = math.ceil(total_water_today/8)
+
+    if total_water_today != None:
+        total_cups_today = math.ceil(total_water_today/8)
+    else:
+        total_water_today = 0
+        total_cups_today = 0
 
     user = User.query.filter_by(user_id=user_id).first()
     user_goal_oz = calculate_user_intake(user.weight, user.age)
