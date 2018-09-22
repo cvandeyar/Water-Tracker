@@ -154,10 +154,10 @@ def app_page():
 
     user = User.query.filter_by(user_id=user_id).first()
     user_goal_oz = calculate_user_intake(user.weight, user.age)
-    user_goal_cups = round((user_goal_oz/8),2)
+    user_goal_cups = round((user_goal_oz/8), 2)
 
 
-    # session["user_goal"] = goal
+    # session["user_goal"] = user_goal_oz
     # user_goal = session["user_goal"]
 
 
