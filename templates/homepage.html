@@ -2,26 +2,37 @@
 {% block content %}
 
 <h1>Water Intake</h1>
-<img src="https://images.pexels.com/photos/33263/highspeed-photography-water-drop-of-water-alien-dance.jpg?auto=compress&cs=tinysrgb&h=350">
 
+<div>
+<img src="https://images.pexels.com/photos/33263/highspeed-photography-water-drop-of-water-alien-dance.jpg?auto=compress&cs=tinysrgb&h=350">
+</div>
+<br>
+
+<div>NEW HERE?</div>
+<form action='/register'>
+    <div>
+        <input type="submit" value="CREATE ACCOUNT">
+    </div>
+</form>
+<br>
+
+<div> ALREADY REGISTERED?</div>
 <form action='/login' method='POST'>
     <div>
-        <label>Email: 
+        <label>Email 
             <input type="email" name="email" required>
-        </label><br>
-    </div>
-
-    <div>
-        <label>Password: 
+        </label>
+   
+        <label>Password
             <input type="password" name="password" required>
         </label>
+    
+        <input type="submit" value="LOGIN">
     </div>
-
-    <div>
-        <input type="submit" value="Log In">
-    </div>
-
 </form>
+
+
+
 
 <!-- <p><a href="http://fellowship.hackbrightacademy.com/">testing</a></p> -->
 

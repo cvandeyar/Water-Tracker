@@ -18,6 +18,21 @@ app.secret_key = "ABCD123456"
 
 app.jinja_env.undefined = StrictUndefined
 
+
+
+#######################I want to import this function from my model file
+
+
+def calculate_user_intake(weight, age):
+    """calculates how much user needs to be drinking""" 
+    
+    need_to_drink = round(((weight/2.2)*age)/28.3,2)
+    # num_cups = math.ceil(need_to_drink/8)
+     
+    return need_to_drink
+###############################
+
+
 @app.route('/')
 def index():
     """Homepage"""
@@ -37,18 +52,27 @@ def register_process():
     """Process registration."""
 
     fname = request.form["fname"]
-    lname = request.form["fname"]
+    lname = request.form["lname"]
     weight = int(request.form["weight"])
     age = int(request.form["age"])
-    # gender = request.form["gender"]
     email = request.form["email"]
     password = request.form["password"]
     # zipcode = request.form["zipcode"]
 
-    new_user = User(fname=fname, lname=lname, weight=weight, age=age, email=email, password=password) #gender=gender
+    email_exist = db.session.query(User.email).filter(User.email==email).one_or_none() 
 
-    db.session.add(new_user)
-    db.session.commit()
+    # check to see if account already exists
+    # if email == db.session.query(User.email).filter(User.email==email).first()[0]:
+    #     flash("ACCOUNT ALREADY EXIST!")
+    #     return redirect("/register")
+    if email_exist and email == email_exist[0]:
+            flash("ACCOUNT ALREADY EXIST!")
+            return redirect("/register")
+    else:
+        new_user = User(fname=fname, lname=lname, weight=weight, age=age, email=email, password=password)
+
+        db.session.add(new_user)
+        db.session.commit()
 
     ############change the flash to a javascript alert 2nd sprint#########
     flash(f"User {email} added")
@@ -75,16 +99,29 @@ def login_process():
     ############maybe do some AJAX here for sprint 2 so don't have to redirect so much############
     if not user:
         flash("No such user")
-        return redirect("/login")
+        return redirect("/register")
 
     if user.password != password:
         flash("Incorrect password")
         return redirect("/login") 
 
+    # goal = calculate_user_intake(user.weight, user.age)
+
     session["user_id"] = user.user_id
+    session["user_fname"] = user.fname
+    # session["user_goal"] = goal
+
+    # user_goal = session["user_goal"]
+    # print(user_goal)
+    # session["user_goal_oz"] = goal[0]
+    # session["user_goal_cups"] = goal[1]
+
+    # user_goal_oz = session["user_goal_oz"]
+    # user_goal_cups = session["user_goal_cups"]
 
     flash("Logged in")
-    return redirect(f"/users/{user.user_id}")
+    return redirect("/app_page")
+    # print(session['user_id'])
 
 
 @app.route('/logout')
@@ -92,45 +129,62 @@ def logout():
     """Log out."""
 
     del session["user_id"]
+    del session["user_fname"]
+    del session["user_goal"]
     flash("Logged Out.")
     return redirect("/")
 
-# @app.route("/users/<int:user_id>")
-# def user_detail(user_id):
-#     """Show info about user."""
-
-#     user = User.query.get(user_id)
-#     # return render_template("user.html", user=user)
-#     print(f"User is {repr(user)}")
-#     return f"User is {repr(user)}"
 
 @app.route('/app_page')
 def app_page():
     """this is the app"""
 
-    user = session["user_id"]
-    total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user).scalar() #how much they've drank in general
+    user_id = session["user_id"]
+    fname = session["user_fname"]
+    total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user_id).scalar() #how much they've drank in general
     current_time = datetime.now().astimezone(pytz.timezone('US/Pacific'))
     current_date = current_time.date()
-    total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user, Water.time_updated >= current_date).scalar()
+    total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
+    total_cups_today = math.ceil(total_water_today/8)
 
-    return f"total {total}. <br> current date {current_date}. <br> total water {total_water_today}"
-
-
-
-
-
+    user = User.query.filter_by(user_id=user_id).first()
+    user_goal_oz = calculate_user_intake(user.weight, user.age)
+    user_goal_cups = math.ceil(user_goal_oz/8)
 
 
+    # session["user_goal"] = goal
+    # user_goal = session["user_goal"]
 
 
-def calculate_user_intake(weight, age):
-    """calculates how much user needs to be drinking""" 
+
+    return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups)
+
+    # return f"total: {total} <br> current date: {current_date} <br> total water: {total_water_today}"
+
+@app.route('/add-water', methods=['POST'])
+def add_water():
+    "Adds water to daily total"
+
+    user_id = session["user_id"]
+    drink = int(request.form['drink'])
+
+    new_drink = Water(ounces=drink, user_id=user_id)
+
+    db.session.add(new_drink)
+    db.session.commit()
+
+    return redirect('/app_page')
+
+
+
+
+# def calculate_user_intake(weight, age):
+#     """calculates how much user needs to be drinking""" 
     
-    need_to_drink = round(((weight/2.2)*age)/28.3,2)
-    num_cups = math.ceil(need_to_drink/8)
+#     need_to_drink = round(((weight/2.2)*age)/28.3,2)
+#     num_cups = math.ceil(need_to_drink/8)
         
-    return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
+#     return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
 
 
 

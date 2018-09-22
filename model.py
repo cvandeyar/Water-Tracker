@@ -2,8 +2,20 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from time import localtime
 import pytz
+import math
 
 db = SQLAlchemy()
+
+
+def calculate_user_intake(weight, age):
+    """calculates how much user needs to be drinking""" 
+    
+    need_to_drink = round(((weight/2.2)*age)/28.3,2)
+    # num_cups = math.ceil(need_to_drink/8)
+     
+    return need_to_drink #, num_cups
+        
+    # return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
 
 
 # Model definitions
@@ -18,13 +30,12 @@ class User(db.Model):
     lname = db.Column(db.String(100), nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    # gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
 
-        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} email={self.email} password={self.password}>" #gender={self.gender} 
+        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} email={self.email} password={self.password}>"
 
 class Water(db.Model):
     """Water intake of water intake website"""
