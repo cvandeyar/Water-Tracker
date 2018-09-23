@@ -98,7 +98,7 @@ def login_process():
 
     ############maybe do some AJAX here for sprint 2 so don't have to redirect so much############
     if not user:
-        flash("No such user")
+        flash("User does not exist. Please create account")
         return redirect("/register")
 
     if user.password != password:
