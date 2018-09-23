@@ -37,7 +37,10 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    return render_template("homepage.html")
+    if session.get('user_id') != None:
+        return redirect('/app_page')
+    else:
+        return render_template("homepage.html")
 
 
 @app.route('/register', methods=['GET'])
@@ -172,8 +175,8 @@ def add_water():
 
     user_id = session["user_id"]
     drink = int(request.form['drink'])
-    time_now = datetime.now()
-    new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_now)
+    time_updated = datetime.now()
+    new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_updated)
 
     db.session.add(new_drink)
     db.session.commit()
