@@ -43,7 +43,7 @@ class Water(db.Model):
     __tablename__= "water_consumption"
 
     water_intake_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    time_updated = db.Column(db.DateTime, default=datetime.now())
+    time_updated = db.Column(db.DateTime, nullable=False)
     ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 

@@ -61,13 +61,14 @@
 <div>
     Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
 </div>
+<br>
 
-<!-- want to give msg that they're getting close or met their goal
-{% if {{ total_water_today }} %}
+<!-- want to give msg that they're getting close or met their goal -->
+{% if total_water_today >= user_goal_oz %}
 
-    <div>you met your goal</div>
+    <div>yay! you met your goal</div>
 
-{% endif %} -->
+{% endif %}
 
 
 <div>

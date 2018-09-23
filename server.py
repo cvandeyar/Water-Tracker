@@ -172,8 +172,8 @@ def add_water():
 
     user_id = session["user_id"]
     drink = int(request.form['drink'])
-
-    new_drink = Water(ounces=drink, user_id=user_id)
+    time_now = datetime.now()
+    new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_now)
 
     db.session.add(new_drink)
     db.session.commit()
