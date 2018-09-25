@@ -10,8 +10,22 @@ db = SQLAlchemy()
 def calculate_user_intake(weight, age):
     """calculates how much user needs to be drinking""" 
     
-    need_to_drink = round(((weight/2.2)*age)/28.3,2)
+    # need_to_drink = round(((weight/2.2)*age)/28.3,2)
     # num_cups = math.ceil(need_to_drink/8)
+
+    a = weight/2.2
+
+    if age < 30:
+        b = a * 40
+    elif age >=30 and age < 55:
+        b = a * 35
+    elif age >= 55: 
+        b = a * 30
+
+    c = b/28.3
+
+    need_to_drink = round(c, 2)
+
      
     return need_to_drink #, num_cups
         

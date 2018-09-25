@@ -105,7 +105,7 @@ def login_process():
         return redirect("/register")
 
     if user.password != password:
-        flash("Incorrect password")
+        flash("Password does not match our records")
         return redirect("/") 
 
     session["user_id"] = user.user_id
