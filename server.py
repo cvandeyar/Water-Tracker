@@ -147,12 +147,11 @@ def app_page():
     user_goal_oz = calculate_user_intake(user.weight, user.age)
     user_goal_cups = round((user_goal_oz/8), 2)
 
-
     # session["user_goal"] = user_goal_oz
     # user_goal = session["user_goal"]
 
-    # if total_water_today >= user_goal_oz:
-    #     flash("yay you're met your daily goal!")
+    if total_water_today > user_goal_oz:
+        flash("yay you're met your daily goal!")
 
     return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups)
 
