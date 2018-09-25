@@ -106,23 +106,12 @@ def login_process():
 
     if user.password != password:
         flash("Incorrect password")
-        return redirect("/login") 
-
-    # goal = calculate_user_intake(user.weight, user.age)
+        return redirect("/") 
 
     session["user_id"] = user.user_id
     session["user_fname"] = user.fname
-    # session["user_goal"] = goal
 
-    # user_goal = session["user_goal"]
-    # print(user_goal)
-    # session["user_goal_oz"] = goal[0]
-    # session["user_goal_cups"] = goal[1]
-
-    # user_goal_oz = session["user_goal_oz"]
-    # user_goal_cups = session["user_goal_cups"]
-
-    flash("Logged in")
+    flash("Login Successful")
     return redirect("/app_page")
     # print(session['user_id'])
 
@@ -133,7 +122,6 @@ def logout():
 
     del session["user_id"]
     del session["user_fname"]
-    flash("Logged Out.")
     return redirect("/")
 
 
@@ -163,11 +151,10 @@ def app_page():
     # session["user_goal"] = user_goal_oz
     # user_goal = session["user_goal"]
 
-
+    # if total_water_today >= user_goal_oz:
+    #     flash("yay you're met your daily goal!")
 
     return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups)
-
-    # return f"total: {total} <br> current date: {current_date} <br> total water: {total_water_today}"
 
 @app.route('/add-water', methods=['POST'])
 def add_water():
