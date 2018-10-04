@@ -2,14 +2,16 @@
 
 from sqlalchemy import func
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, render_template, redirect, request, session, flash, jsonify
 import math
 
 from datetime import datetime
 from time import localtime
 import pytz
 # from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User, Water, calculate_user_intake
+from model import connect_to_db, db, User, Water
+
+
 
 
 app = Flask(__name__)
@@ -17,20 +19,6 @@ app = Flask(__name__)
 app.secret_key = "ABCD123456"
 
 app.jinja_env.undefined = StrictUndefined
-
-
-
-#######################I want to import this function from my model file
-
-
-# def calculate_user_intake(weight, age):
-#     """calculates how much user needs to be drinking""" 
-    
-#     need_to_drink = round(((weight/2.2)*age)/28.3,2)
-#     # num_cups = math.ceil(need_to_drink/8)
-     
-#     return need_to_drink
-###############################
 
 
 @app.route('/')
@@ -47,7 +35,9 @@ def index():
 def register_form():
     """Show form for user signup."""
 
-    return render_template("register_form.html")
+    TIMEZONES = pytz.all_timezones
+
+    return render_template("register_form.html", timezones=TIMEZONES)
 
 
 @app.route('/register', methods=['POST'])
@@ -60,19 +50,16 @@ def register_process():
     age = int(request.form["age"])
     email = request.form["email"]
     password = request.form["password"]
+    time_zone = request.form["timezone"]
     # zipcode = request.form["zipcode"]
 
     email_exist = db.session.query(User.email).filter(User.email==email).one_or_none() 
 
-    # check to see if account already exists
-    # if email == db.session.query(User.email).filter(User.email==email).first()[0]:
-    #     flash("ACCOUNT ALREADY EXIST!")
-    #     return redirect("/register")
     if email_exist and email == email_exist[0]:
             flash("ACCOUNT ALREADY EXIST!")
             return redirect("/register")
     else:
-        new_user = User(fname=fname, lname=lname, weight=weight, age=age, email=email, password=password)
+        new_user = User(fname=fname, lname=lname, weight=weight, age=age, email=email, password=password, time_zone=time_zone)
 
         db.session.add(new_user)
         db.session.commit()
@@ -80,13 +67,7 @@ def register_process():
     ############change the flash to a javascript alert 2nd sprint#########
     flash(f"User {email} added")
     return redirect('/')
-    # return redirect(f"/users/{new_user.user_id}")
-
-# @app.route('/login', methods=['GET'])
-# def login_form():
-#     """Show login form."""
-
-#     return render_template("login_form.html")
+    # return redirect(f"/users/{new_user.user_fname}")
 
 
 @app.route('/login', methods=['POST'])
@@ -110,6 +91,7 @@ def login_process():
 
     session["user_id"] = user.user_id
     session["user_fname"] = user.fname
+    session["user_timezone"] = user.time_zone
 
     flash("Login Successful")
     return redirect("/app_page")
@@ -122,6 +104,7 @@ def logout():
 
     del session["user_id"]
     del session["user_fname"]
+    del session["user_timezone"]
     return redirect("/")
 
 
@@ -131,8 +114,12 @@ def app_page():
 
     user_id = session["user_id"]
     fname = session["user_fname"]
-    total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user_id).scalar() #how much they've drank in general
-    current_time = datetime.now().astimezone(pytz.timezone('US/Pacific'))
+    time_zone = session["user_timezone"]
+
+    # total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user_id).scalar() #how much they've drank in general
+    
+    current_time = datetime.now().astimezone(pytz.timezone(time_zone))
+
     current_date = current_time.date()
 
     total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
@@ -144,16 +131,50 @@ def app_page():
         total_cups_today = 0
 
     user = User.query.filter_by(user_id=user_id).first()
-    user_goal_oz = calculate_user_intake(user.weight, user.age)
+
+    user_goal_oz = User.calculate_user_intake(user.weight, user.age)
+
     user_goal_cups = round((user_goal_oz/8), 2)
 
-    # session["user_goal"] = user_goal_oz
-    # user_goal = session["user_goal"]
 
     if total_water_today > user_goal_oz:
         flash("yay you're met your daily goal!")
 
-    return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups)
+    bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    days = ['m', 't', 'w']
+    qty = []
+    for item in bar_chart:
+        # days.append(item[0].strftime('%a-%D'))
+        qty.append(item[1])
+
+
+
+
+    return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups, time_zone=time_zone, days=days, qty=qty)
+
+
+# bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).filter(Water.user_id==session["user_id"]).all()
+
+# fmt = "%a-%D"
+
+
+
+
+# this is for chart.js
+# >>> test = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated))
+# >>> test.all()
+# [(datetime.date(2018, 9, 4), 4), (datetime.date(2018, 9, 1), 22), (datetime.date(2018, 9, 30), 164), (datetime.date(2018, 9, 2), 26), (datetime.date(2018, 9, 3), 18)]
+# >>> test.filter(Water.user_id==1).all()
+# [(datetime.date(2018, 9, 1), 4), (datetime.date(2018, 9, 30), 20), (datetime.date(2018, 9, 2), 4), (datetime.date(2018, 9, 3), 6)]
+
+# >>> user1[3][0].strftime('%a-%D')
+# 'Mon-09/03/18'
+
+
+
+
+
 
 @app.route('/add-water', methods=['POST'])
 def add_water():

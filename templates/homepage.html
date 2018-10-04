@@ -1,46 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
 <h1>Water Tracker</h1>
 
-<div>
-<img src="http://2.bp.blogspot.com/_y2U7P39v5v8/TPWsYkNLwEI/AAAAAAAAAXM/Ao1CIMLY5RY/s1600/thirsty.jpg">
+<div class="row">
+    <div class="col">
+        <div>
+            <img src="http://2.bp.blogspot.com/_y2U7P39v5v8/TPWsYkNLwEI/AAAAAAAAAXM/Ao1CIMLY5RY/s1600/thirsty.jpg">
+        </div>
+    </div>
+
+    <div class="col">
+
+        <div>NEW HERE?</div>
+
+        <form action='/register'>
+            <div>
+                <input type="submit" value="CREATE ACCOUNT">
+            </div>
+        </form>
+        <br>
+
+        <div> ALREADY REGISTERED?</div>
+
+        <form action='/login' method='POST'>
+            <div class="form-group">
+                <label>Email 
+                    <input id="email" type="email" name="email" required>
+                </label>
+           
+                <label>Password
+                    <input id="password" type="password" name="password" required>
+                </label>
+            
+                <input id="login" type="submit" value="LOGIN">
+            </div>
+        </form>
+    </div>
 </div>
-<br>
-
-<div>NEW HERE?</div>
-<form action='/register'>
-    <div>
-        <input type="submit" value="CREATE ACCOUNT">
-    </div>
-</form>
-<br>
-
-<div> ALREADY REGISTERED?</div>
-<form action='/login' method='POST'>
-    <div>
-        <label>Email 
-            <input type="email" name="email" required>
-        </label>
-   
-        <label>Password
-            <input type="password" name="password" required>
-        </label>
-    
-        <input class="login" type="submit" value="LOGIN">
-    </div>
-</form>
 
 
-{# <script>
 
-    function alertLogin(){
+
+<!-- <script>
+    "use strict";
+
+    function alertLogin(evt){
+        evt.preventDefault():
+
+         let formInputs = {
+        "email": $("#email").val(),
+        "password": $("#password").val(),
+    };
+        $.post("/login", formInputs, )
         confirm("Login Successful");
     }
 
-    $(".login").on("click", alertLogin)
 
-</script> #}
+    $(".login").on("submit", alertLogin)
+
+</script> -->
 
 
 

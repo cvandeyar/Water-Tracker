@@ -1,93 +1,107 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div>
-    Date: {{ current_date }}
-</div>
 
-<div>
-    <h2>Hi, {{ fname }}!</h2>
-    Hope you're keeping hydrated! :D
-</div>
-<br>
+<div class="row">
+    <div class="col">
+        <div>
+            Today's Date: {{ current_date }} <br>
+            Timezone: {{ time_zone }} DELETE LATER!!!!!
+        </div>
 
-<div>
-    <img src="http://www.bottled-water-filters-coolers.com/images/water-comic-strip.gif">
-
-</div>
-
-<!-- <form action="/add-water" method="POST">
-    <div>
-        <input type='radio' name='drink' value='2'> 2 Oz (1/4 Cup) <br>
-        <input type='radio' name='drink' value='4'> 4 Oz (1/2 Cup) <br>
-        <input type='radio' name='drink' value='6'> 6 Oz (3/4 Cup) <br>
-        <input type='radio' name='drink' value='8' checked=""> 8 Oz (1 Cup) <br>
+        <div>
+            <h2>Hi, {{ fname }}!</h2>
+            Hope you're keeping hydrated!💧😁
+        </div>
     </div>
-    <div>
-         <input type="submit" value="SUBMIT">
-    </div>
-</form>  -->  
-
-<div>
-    Water Intake...
 </div>
 
-<form action="/add-water" method="POST">
-    <div>
-        <select name='drink'>
-            <option disabled selected value> -- select an option -- </option>
-            <option value='2'> 2 Oz (1/4 Cup)</option>
-            <option value='4'> 4 Oz (1/2 Cup)</option>
-            <option value='6'> 6 Oz (3/4 Cup)</option>
-            <option value='8'> 8 Oz (1 Cup)</option>
-            <option value='12'> 12 Oz (1.5 Cups)</option>
-            <option value='16'> 16 Oz (2 Cups)</option>
-        </select>
+<div class="row">
+    <div class="col">
+        <div>
+            <img src="http://www.bottled-water-filters-coolers.com/images/water-comic-strip.gif">
+        </div>
     </div>
-    <div>
-         <input type="submit" value="SUBMIT">
-    </div>
-</form>  
 
+    <div class="col">
+        <div>
+            Water Intake...
+        </div>
 
-<br>
+        <form id="add_water" action="/add-water" method="POST">
+            <div>
+                <select name='drink'>
+                    <option disabled selected value> -- select an option -- </option>
+                    <option value='2'> 2 Oz (1/4 Cup)</option>
+                    <option value='4'> 4 Oz (1/2 Cup)</option>
+                    <option value='6'> 6 Oz (3/4 Cup)</option>
+                    <option value='8'> 8 Oz (1 Cup)</option>
+                    <option value='12'> 12 Oz (1.5 Cups)</option>
+                    <option value='16'> 16 Oz (2 Cups)</option>
+                </select>
+            </div>
 
-<div>
-    Current Water Count: {{ total_water_today }} Oz ( {{ total_cups_today }} Cups)
+            <div>
+                 <input type="submit" value="SUBMIT">
+            </div>
+        </form>  
+        <br>
 
-    <!-- add motivational messages when getting close to goal or goal is met -->
-</div>
+        <div>
+            Current Water Count: {{ total_water_today }} Oz ( {{ total_cups_today }} Cups)
 
-<div>
-    Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
-</div>
-<br>
+            <!-- add motivational messages when getting close to goal or goal is met -->
+        </div>
+
+        <div>
+            Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
+        </div>
+        <br>
 
 <!-- want to give msg that they're getting close or met their goal -->
 
-{#}
-{% if total_water_today >= user_goal_oz %}
+<div>{{ days }}</div>
 
-    <div>yay! you met your goal</div>
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+    "use strict";
+    let ctx = document.getElementById("myChart").getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ days }}, 
+            datasets: [{
+            label: "Daily Water Intake",
+            data: {{ qty }} 
+        }],
+    },
+        options: {
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
 
-{% endif %} #}
+    });
+</script>
 
 
 
 
-
-<div>
-    <form action='/logout'>
         <div>
-            <input type="submit" value="LOGOUT">
+            <form action='/logout'>
+                <div>
+                    <input type="submit" value="LOGOUT">
+                </div>
+            </form>
         </div>
-    </form>
+
+    </div>
 </div>
-
-
-
-
-
 
 
 {% endblock %}

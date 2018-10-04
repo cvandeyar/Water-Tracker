@@ -6,34 +6,6 @@ import math
 
 db = SQLAlchemy()
 
-
-def calculate_user_intake(weight, age):
-    """calculates how much user needs to be drinking""" 
-    
-    # need_to_drink = round(((weight/2.2)*age)/28.3,2)
-    # num_cups = math.ceil(need_to_drink/8)
-
-    a = weight/2.2
-
-    if age < 30:
-        b = a * 40
-    elif age >=30 and age < 55:
-        b = a * 35
-    elif age >= 55: 
-        b = a * 30
-
-    c = b/28.3
-
-    need_to_drink = round(c, 2)
-
-     
-    return need_to_drink #, num_cups
-        
-    # return f"You need to drink about {need_to_drink}Oz which is about {num_cups} cups a day"
-
-
-# Model definitions
-
 class User(db.Model):
     """User of water intake website"""
 
@@ -46,10 +18,31 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    time_zone = db.Column(db.String(100), nullable=False)
+
+    @classmethod
+    def calculate_user_intake(cls, weight, age):
+        """calculates how much user needs to be drinking in ounces""" 
+
+        a = weight/2.2
+
+        if age < 30:
+            b = a * 40
+        elif age >=30 and age < 55:
+            b = a * 35
+        elif age >= 55: 
+            b = a * 30
+
+        c = b/28.3
+
+        need_to_drink = round(c, 2)
+
+        return need_to_drink
+
 
     def __repr__(self):
 
-        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} email={self.email} password={self.password}>"
+        return f"<User user_id={self.user_id} fname={self.fname} lname={self.lname} weight={self.weight} age={self.age} email={self.email} password={self.password} time_zone={self.time_zone}>"
 
 class Water(db.Model):
     """Water intake of water intake website"""
@@ -58,6 +51,7 @@ class Water(db.Model):
 
     water_intake_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     time_updated = db.Column(db.DateTime, nullable=False)
+    # change ounces to qty!!!!!!!!
     ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
