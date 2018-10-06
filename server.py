@@ -4,21 +4,31 @@ from sqlalchemy import func
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, session, flash, jsonify
 import math
-
 from datetime import datetime
 from time import localtime
 import pytz
 # from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Water
+import config
+
+
 
 
 
 
 app = Flask(__name__)
 
-app.secret_key = "ABCD123456"
+app.secret_key = config.app_secret_key
 
 app.jinja_env.undefined = StrictUndefined
+
+
+
+
+@app.route('/set/')
+def set():
+    session['token'] = config.token
+    return 'ok'
 
 
 @app.route('/')
@@ -137,17 +147,23 @@ def app_page():
     user_goal_cups = round((user_goal_oz/8), 2)
 
 
-    if total_water_today > user_goal_oz:
-        flash("yay you're met your daily goal!")
+    # if total_water_today > user_goal_oz:
+    # flash("yay you're met your daily goal!")
 
-    bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+    bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
 
-    days = ['m', 't', 'w']
+    # bar_chart = db.session.query(func.date_trunc('month', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('month', Water.time_updated)).order_by(func.date_trunc('month', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    # bar_chart = db.session.query(func.date_trunc('week', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('week', Water.time_updated)).order_by(func.date_trunc('week', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    # bar_chart = db.session.query(func.date_trunc('day', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('day', Water.time_updated)).order_by(func.date_trunc('day', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+
+    days = []  
     qty = []
     for item in bar_chart:
-        # days.append(item[0].strftime('%a-%D'))
+        days.append(item[0].strftime('%a-%D'))
         qty.append(item[1])
-
 
 
 
@@ -178,7 +194,7 @@ def app_page():
 
 @app.route('/add-water', methods=['POST'])
 def add_water():
-    "Adds water to daily total"
+    """Adds water to daily total"""
 
     user_id = session["user_id"]
     drink = int(request.form['drink'])
@@ -189,6 +205,32 @@ def add_water():
     db.session.commit()
 
     return redirect('/app_page')
+
+
+
+
+# @app.route('/chart.js')
+# def charts():
+#     """Creates charts"""
+
+#     user_id = session["user_id"]
+
+#     bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+
+#     days = []  
+#     qty = []
+#     for item in bar_chart:
+#         days.append(item[0].strftime('%a-%D'))
+#         qty.append(item[1])
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
