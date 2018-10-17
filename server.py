@@ -200,7 +200,8 @@ def add_water():
     db.session.add(new_drink)
     db.session.commit()
 
-    return redirect('/app_page')
+    # return redirect('/app_page')
+    return "water"
 
 
 
