@@ -11,13 +11,18 @@
 
         <div>
             <h2>Hi, {{ fname }}!</h2>
-            Hope you're keeping hydrated!💧😁
+            Hope you're keeping hydrated!😁
         </div>
         <div>
             Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
         </div>
     </div>
 </div>
+
+
+
+<br>
+
 
 <div class="row">
     <div class="col">
@@ -44,11 +49,11 @@
         </form>  
 
         
-       <!--  <div id='current_water'>
+        <div id='current_water'>
             Current Water Count: {{ total_water_today }} Oz ( {{ total_cups_today }} Cups)
 
            
-        </div> -->
+        </div>
 
  <!-- add motivational messages when getting close to goal or goal is met -->
 
@@ -62,16 +67,44 @@
     </div>
 </div>
 
+<br>
+<div class='row'>
+    <div class='col'>
+        <form id='stat-submit'>
+            <div>
+                <select id='stats' name='filter_name' required>
+                    <option disabled selected value>View Stats</option>
+                    <!-- <option value='today'> Today </option> -->
+                    <option value='days'> View by days </option>
+                    <option value='weeks'> View by Week </option>
+                    <option value='months'> View by Month </option>
+                </select>
+            </div>
+            <div>
+                <input type="submit" value='Stats'>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <canvas id="myChart" width="400" height="400"></canvas>
+
+<!-- <script>
+    const time_parameter = {{ time_parameter|tojson }}
+    const qty = {{ qty|tojson }}
+    const user_goal_oz = {{ user_goal_oz }}
+</script> -->
+
+<script src="/static/js/stat_page.js"></script>
 
 <!-- <script>
     "use strict";
     let ctx = document.getElementById("myChart").getContext('2d');
     let myChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-            labels: {{ days|tojson }}, 
+            labels: {{ time_parameter|tojson }}, 
             datasets: [{
             label: "Daily Water Intake",
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -113,7 +146,7 @@
     let myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ days|tojson }}, 
+            labels: {{ time_parameter|tojson }}, 
             datasets: [{
             label: "Daily Water Intake",
             backgroundColor: [
@@ -160,27 +193,28 @@
 </script> -->
 
 
-<script>
+<!-- <script>
     "use strict";
     let ctx = document.getElementById("myChart").getContext('2d');
     let myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'horizontalBar',
             data: {
                 datasets: [{
                     label: 'qty',
                     data: {{ qty|tojson }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255,99,132,1)',
                 },
                 {
                     label: 'goal',
 
-            data: Array.apply(null, new Array(7)).map(Number.prototype.valueOf, {{ user_goal_oz }}),
+            data: Array.apply(null, new Array(5)).map(Number.prototype.valueOf, {{ user_goal_oz }}),
             fill: false,
             radius: 0,
-            backgroundColor: "rgba(0,0,0,0.1)"
-
-
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
                 }],
-            labels: {{ days|tojson }}
+            labels: {{ time_parameter|tojson }}
         },
 
 
@@ -217,7 +251,52 @@
 
 
 
-</script>
+</script> -->
+
+
+
+
+<!-- <script>
+    "use strict";
+    let ctx = document.getElementById("myChart").getContext('2d');
+    let myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    label: 'qty',
+                    data: {{ qty|tojson }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255,99,132,1)',
+                },
+                {
+                    label: 'goal',
+                    data: Array.apply(null, new Array(-100, 0, 100)).map(Number.prototype.valueOf, {{ user_goal_oz }}),
+                    type: 'line',
+                    fill: false,
+                    radius: 10,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                }],
+            labels: {{ time_parameter|tojson }}
+        },
+
+
+       
+
+        options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }}
+
+
+    });
+
+</script> -->
 
 
 
@@ -275,14 +354,12 @@
         $.post("/add-water", 
            formInputs,
            rerouteBack);
-        
     };
 
     $("#add-water").on("submit", submitWater);
 
 
 </script>
-
 
 
 

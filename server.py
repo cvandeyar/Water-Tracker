@@ -7,12 +7,8 @@ import math
 from datetime import datetime
 from time import localtime
 import pytz
-# from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Water
 import config
-
-
-
 
 
 
@@ -21,9 +17,6 @@ app = Flask(__name__)
 app.secret_key = config.app_secret_key
 
 app.jinja_env.undefined = StrictUndefined
-
-
-
 
 
 @app.route('/')
@@ -36,7 +29,7 @@ def index():
         return render_template("homepage.html")
 
 
-@app.route('/register', methods=['GET'])
+@app.route('/register')
 def register_form():
     """Show form for user signup."""
 
@@ -56,7 +49,6 @@ def register_process():
     email = request.form["email"]
     password = request.form["password"]
     time_zone = request.form["timezone"]
-    # zipcode = request.form["zipcode"]
 
     email_exist = db.session.query(User.email).filter(User.email==email).one_or_none() 
 
@@ -81,7 +73,6 @@ def login_process():
 
     email = request.form["email"]
     password = request.form["password"]
-
     user = User.query.filter_by(email=email).first()
 
 
@@ -145,25 +136,28 @@ def app_page():
     # if total_water_today > user_goal_oz:
     # flash("yay you're met your daily goal!")
 
-    # bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+    # bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id, Water.time_updated==current_date).all()
 
-    bar_chart = db.session.query(func.date_trunc('month', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('month', Water.time_updated)).order_by(func.date_trunc('month', Water.time_updated)).filter(Water.user_id==user_id).all()
+    # bar_chart = db.session.query(func.date_trunc('month', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('month', Water.time_updated)).order_by(func.date_trunc('month', Water.time_updated)).filter(Water.user_id==user_id).all()
 
     # bar_chart = db.session.query(func.date_trunc('week', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('week', Water.time_updated)).order_by(func.date_trunc('week', Water.time_updated)).filter(Water.user_id==user_id).all()
 
     # bar_chart = db.session.query(func.date_trunc('day', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('day', Water.time_updated)).order_by(func.date_trunc('day', Water.time_updated)).filter(Water.user_id==user_id).all()
 
 
-    days = []  
-    qty = []
-    for item in bar_chart:
-        days.append(item[0].strftime('%a-%D'))
-        qty.append(item[1])
+    # time_parameter = []  
+    # qty = []
+    # for item in bar_chart:
+    #     time_parameter.append(item[0].strftime('%a-%D'))
+    #     qty.append(item[1])
+
+    time_parameter = ['Today']
+    qty = [total_water_today]
 
 
     IP_token = config.token
 
-    return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups, time_zone=time_zone, days=days, qty=qty, IP_token=IP_token)
+    return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups, time_zone=time_zone, time_parameter=time_parameter, qty=qty, IP_token=IP_token)
 
 
 # bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).filter(Water.user_id==session["user_id"]).all()
@@ -192,7 +186,7 @@ def app_page():
 def add_water():
     """Adds water to daily total"""
 
-    user_id = session["user_id"]
+    user_id = session['user_id']
     drink = int(request.form['drink'])
     time_updated = datetime.now()
     new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_updated)
@@ -200,33 +194,124 @@ def add_water():
     db.session.add(new_drink)
     db.session.commit()
 
-    # return redirect('/app_page')
-    return "water"
+    return redirect('/app_page')
+    # return "water added"
 
 
+#############################################
+
+def month_query(user_id):
+    """organizes data by month"""
+
+    line_chart = db.session.query(func.date_trunc('month', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('month', Water.time_updated)).order_by(func.date_trunc('month', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    time_parameter = []  
+    qty = []
+    for item in line_chart:
+        time_parameter.append(item[0].strftime('%b %Y'))
+        qty.append(item[1])
+
+    return time_parameter, qty
+
+def week_query(user_id):
+    """organizes data by week"""
+
+    line_chart = db.session.query(func.date_trunc('week', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('week', Water.time_updated)).order_by(func.date_trunc('week', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    time_parameter = []  
+    qty = []
+    for item in line_chart:
+        time_parameter.append(item[0].strftime('%D'))
+        qty.append(item[1])
+
+    return time_parameter, qty
+
+def day_query(user_id):
+    """organizes data by day"""
+
+    line_chart = db.session.query(func.date_trunc('day', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('day', Water.time_updated)).order_by(func.date_trunc('day', Water.time_updated)).filter(Water.user_id==user_id).all()
+
+    time_parameter = []  
+    qty = []
+    for item in line_chart:
+        time_parameter.append(item[0].strftime('%D'))
+        qty.append(item[1])
+
+    return time_parameter, qty
 
 
-# @app.route('/chart.js')
-# def charts():
-#     """Creates charts"""
+# def current_day_query(user_id):
+#     """shows current day drink amount"""
+
+
+#     line_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+
+#     time_parameter = []  
+#     qty = []
+#     for item in line_chart:
+#         time_parameter.append(item[0].strftime('%D'))
+#         qty.append(item[1])
+
+#     return time_parameter, qty
+
+
+# @app.route('/scatter_chart.json')
+# def scatter_chart():
+#     """makes scatter chart of consumption"""
 
 #     user_id = session["user_id"]
 
-#     bar_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+#     if they chose month:
+#         month_query(user_id)
+#     elif they chose week:
+#         week_query(user_id)
+#     elif they chose week:
+#         day_query(user_id)
+#     else:
+#         current_day_query(user_id)
 
-#     days = []  
-#     qty = []
-#     for item in bar_chart:
-#         days.append(item[0].strftime('%a-%D'))
-#         qty.append(item[1])
+#     return jsonify(scatter_chart_data)
+
+# @app.route('/pie_chart.json')
+# def pie_chart():
+#     """makes pie chart of location"""
+
+#     user_id = session["user_id"]
+
+#     return jsonify(pie_chart_data)
 
 
+#############################################
+@app.route('/stat_page.json')
+def stats():
+    """Summary of intake in graphs"""
 
+    user_id = session["user_id"]
+    filter_name = request.args.get('filter_name')
+    print("filter name is", filter_name)
 
+    user = User.query.filter_by(user_id=user_id).first()
+    user_goal_oz = User.calculate_user_intake(user.weight, user.age)
 
+    # if filter_name == 'today':
 
+    #     time_parameter, qty = current_day_query(user_id)
 
+    if filter_name == 'days':
 
+        time_parameter, qty = day_query(user_id)
+
+    elif filter_name == 'weeks':
+    
+        time_parameter, qty = week_query(user_id)
+
+    elif filter_name == 'months':
+    
+        time_parameter, qty = month_query(user_id)
+
+    # return render_template("stat_page.html", user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
+
+    return jsonify(user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
 
 
 
