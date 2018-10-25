@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div> STAT PAGE </div>
+
+<canvas id="myChart" width="200" height="200"></canvas>
+
+<script>
+    const time_parameter = {{ time_parameter|tojson }}
+    const qty = {{ qty|tojson }}
+    const user_goal_oz = {{ user_goal_oz }}
+</script>
+
+<script src="/static/js/stat_page.js"></script>
+
+{% endblock %}
