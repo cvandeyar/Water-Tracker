@@ -187,15 +187,15 @@ def add_water():
     """Adds water to daily total"""
 
     user_id = session['user_id']
-    drink = int(request.form['drink'])
+    drink = int(request.form.get('drink'))
     time_updated = datetime.now()
     new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_updated)
 
     db.session.add(new_drink)
     db.session.commit()
 
-    return redirect('/app_page')
-    # return "water added"
+    # return redirect('/app_page')
+    return "water added"
 
 
 #############################################

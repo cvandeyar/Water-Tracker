@@ -13,7 +13,7 @@
             <h2>Hi, {{ fname }}!</h2>
             Hope you're keeping hydrated!😁
         </div>
-        <div>
+        <div id='goal_num'>
             Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
         </div>
     </div>
@@ -30,7 +30,7 @@
             Water Intake...
         </div>
 
-        <form id="add-water" action="/add-water" method="POST">
+        <form id="add-water">
             <div>
                 <select id='qty-field' name='drink' required>
                     <option disabled selected value> -- select an option -- </option>
@@ -49,10 +49,8 @@
         </form>  
 
         
-        <div id='current_water'>
+        <div id='daily_goal'>
             Current Water Count: {{ total_water_today }} Oz ( {{ total_cups_today }} Cups)
-
-           
         </div>
 
  <!-- add motivational messages when getting close to goal or goal is met -->
