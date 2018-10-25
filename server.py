@@ -193,9 +193,27 @@ def add_water():
 
     db.session.add(new_drink)
     db.session.commit()
+ 
+    time_zone = session["user_timezone"]
+
+    # total = db.session.query(func.sum(Water.ounces)).filter_by(user_id=user_id).scalar() #how much they've drank in general
+    
+    current_time = datetime.now().astimezone(pytz.timezone(time_zone))
+
+    current_date = current_time.date()
+
+    total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
+
+    if total_water_today != None:
+        total_cups_today = round((total_water_today/8),2)
+    else:
+        total_water_today = 0
+        total_cups_today = 0
+
+
 
     # return redirect('/app_page')
-    return "water added"
+    return f'Current Water Count: {total_water_today} Oz ( {total_cups_today} Cups)'
 
 
 #############################################

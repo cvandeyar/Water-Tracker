@@ -53,6 +53,9 @@
             Current Water Count: {{ total_water_today }} Oz ( {{ total_cups_today }} Cups)
         </div>
 
+<script src="/static/js/daily_goal.js"></script>
+
+
  <!-- add motivational messages when getting close to goal or goal is met -->
 
 
@@ -71,7 +74,7 @@
         <form id='stat-submit'>
             <div>
                 <select id='stats' name='filter_name' required>
-                    <option disabled selected value>View Stats</option>
+                    <option value='days'>View Stats</option>
                     <!-- <option value='today'> Today </option> -->
                     <option value='days'> View by days </option>
                     <option value='weeks'> View by Week </option>
@@ -302,7 +305,7 @@
 
 
 <!-- this is for grabbing the city every time you submit a drink -->
-<script>
+<!-- <script>
     
 
     // fetch("https://ipinfo.io/json?token={{ IP_token }}").then(function(response){
@@ -357,7 +360,7 @@
     $("#add-water").on("submit", submitWater);
 
 
-</script>
+</script> -->
 
 
 
