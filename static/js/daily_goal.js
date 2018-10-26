@@ -2,7 +2,10 @@
 
 function updateGoal(result){
     // alert('entry successful');
-    $('#daily_goal')[0].outerText = result
+    // debugger;
+    console.log('hi stranger');
+    $('#daily_goal')[0].innerText = result
+    console.log('yay we made it');
 }
 
 function submitWater(evt){
@@ -10,7 +13,7 @@ function submitWater(evt){
     console.log('hello');
 
     let formInputs = {
-        'drink': $('#qty-field').val()
+        'drink': $('#qty-field').val(),
     };
 
     $.post('/add-water', 

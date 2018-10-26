@@ -54,7 +54,7 @@ class Water(db.Model):
     # change ounces to qty!!!!!!!!
     ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    # zipcode = db.Column(db.Integer, nullable=False)
+    # postal = db.Column(db.Integer, nullable=True)
 
     # def time_entered(self):
     #     return time_updated.astimezone(pytz.timezone('US/Pacific'))

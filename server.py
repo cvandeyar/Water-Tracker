@@ -187,7 +187,7 @@ def add_water():
     """Adds water to daily total"""
 
     user_id = session['user_id']
-    drink = int(request.form.get('drink'))
+    drink = request.form.get('drink')
     time_updated = datetime.now()
     new_drink = Water(ounces=drink, user_id=user_id, time_updated=time_updated)
 
@@ -204,16 +204,15 @@ def add_water():
 
     total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
 
-    if total_water_today != None:
+    if total_water_today != None or total_water_today != 0:
         total_cups_today = round((total_water_today/8),2)
     else:
         total_water_today = 0
         total_cups_today = 0
 
+    return f'Current Water Count: {total_water_today} Oz ({total_cups_today} Cups)'
 
-
-    # return redirect('/app_page')
-    return f'Current Water Count: {total_water_today} Oz ( {total_cups_today} Cups)'
+    
 
 
 #############################################

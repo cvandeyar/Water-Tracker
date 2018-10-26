@@ -51,11 +51,11 @@ function updateChartInfo(evt){
     $.get('/stat_page.json', formInputs, updateChart);
 }
 
-$('#stat-submit').on('submit', updateChartInfo);
+$('#stat-submit').on('submit', updateChartInfo)
 
 $(document).ready(function(){
     let formInputs = {
         filter_name: 'days',
     };
     $.get('/stat_page.json', formInputs, updateChart);
-})
+});
