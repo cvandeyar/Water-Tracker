@@ -53,9 +53,9 @@ function updateChartInfo(evt){
 
 $('#stat-submit').on('submit', updateChartInfo)
 
-$(document).ready(function(){
-    let formInputs = {
-        filter_name: 'days',
-    };
-    $.get('/stat_page.json', formInputs, updateChart);
-});
+// $(document).ready(function(){
+//     let formInputs = {
+//         filter_name: 'months',
+//     };
+//     $.get('/stat_page.json', formInputs, updateChart);
+// });

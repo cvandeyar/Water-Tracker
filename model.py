@@ -54,16 +54,8 @@ class Water(db.Model):
     # change ounces to qty!!!!!!!!
     ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    # postal = db.Column(db.Integer, nullable=True)
-
-    # def time_entered(self):
-    #     return time_updated.astimezone(pytz.timezone('US/Pacific'))
-
+    postal = db.Column(db.Integer, nullable=True)
     user = db.relationship('User', backref='water')
-
-    # def convert_timezone(self):
-    #     time_updated = self.time_updated.astimezone(pytz.timezone('US/Pacific')).ctime()
-    #     return time_updated
 
     def __repr__(self):
 
@@ -71,24 +63,7 @@ class Water(db.Model):
         water_intake_id={self.water_intake_id} 
         time_updated={self.time_updated} 
         ounces={self.ounces} 
-        user_id={self.user_id}>"""
-
-# class Bathroom(db.Model):
-#     """Bathroom use of water intake website"""
-
-#     __tablename__= "bathroom_use"
-
-#     bathroom_use_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     time = db.Column(db.DateTime, default=datetime.now())
-#     color = db.Column(db.Integer, nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
-#     user = db.relationship('User', backref='bathroom')
-
-#     def __repr__(self):
-
-#         return f"<Bathroom_use bathroom_use_id={self.bathroom_use_id} time={self.time} color={self.color} user_id={self.user_id}>"
-
+        user_id={self.user_id} postal={self.postal}>"""
 
 #################################################
 

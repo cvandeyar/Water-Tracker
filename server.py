@@ -204,17 +204,16 @@ def add_water():
 
     total_water_today = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
 
-    if total_water_today != None or total_water_today != 0:
+    if int(total_water_today) != None or int(total_water_today) != 0:
         total_cups_today = round((total_water_today/8),2)
     else:
         total_water_today = 0
         total_cups_today = 0
 
+    print('user id', user_id)
+    print('current date', current_date)
     return f'Current Water Count: {total_water_today} Oz ({total_cups_today} Cups)'
-
     
-
-
 #############################################
 
 def month_query(user_id):
@@ -256,38 +255,32 @@ def day_query(user_id):
 
     return time_parameter, qty
 
+def today_query(user_id):
+    """shows current day drink amount"""
 
-# def current_day_query(user_id):
-#     """shows current day drink amount"""
+    user_id = session['user_id']
+    time_updated = datetime.now()
+    time_zone = session["user_timezone"]
+    current_time = datetime.now().astimezone(pytz.timezone(time_zone))
+    current_date = current_time.date()
 
+    ###############################
 
-#     line_chart = db.session.query(func.date(Water.time_updated),func.sum(Water.ounces)).group_by(func.date(Water.time_updated)).order_by(func.date(Water.time_updated)).filter(Water.user_id==user_id).all()
+    line_chart = db.session.query(func.sum(Water.ounces)).filter(Water.user_id==user_id, Water.time_updated >= current_date).scalar()
 
-#     time_parameter = []  
-#     qty = []
-#     for item in line_chart:
-#         time_parameter.append(item[0].strftime('%D'))
-#         qty.append(item[1])
+    today = current_date
+    time_parameter = [today.strftime('%a%d%y')]
+    qty = [line_chart]
 
-#     return time_parameter, qty
+    # time_parameter = []  
+    # qty = []
+    # for item in line_chart:
+    #     time_parameter.append(item[0].strftime('%D'))
+    #     qty.append(item[1])
 
+    return time_parameter, qty
 
-# @app.route('/scatter_chart.json')
-# def scatter_chart():
-#     """makes scatter chart of consumption"""
-
-#     user_id = session["user_id"]
-
-#     if they chose month:
-#         month_query(user_id)
-#     elif they chose week:
-#         week_query(user_id)
-#     elif they chose week:
-#         day_query(user_id)
-#     else:
-#         current_day_query(user_id)
-
-#     return jsonify(scatter_chart_data)
+#######################################################
 
 # @app.route('/pie_chart.json')
 # def pie_chart():
@@ -310,11 +303,11 @@ def stats():
     user = User.query.filter_by(user_id=user_id).first()
     user_goal_oz = User.calculate_user_intake(user.weight, user.age)
 
-    # if filter_name == 'today':
+    if filter_name == 'today':
 
-    #     time_parameter, qty = current_day_query(user_id)
+        time_parameter, qty = today_query(user_id)
 
-    if filter_name == 'days':
+    elif filter_name == 'days':
 
         time_parameter, qty = day_query(user_id)
 
@@ -328,6 +321,8 @@ def stats():
 
     # return render_template("stat_page.html", user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
 
+    print('time time_parameter: ', time_parameter)
+    print('qty', qty)
     return jsonify(user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
 
 
