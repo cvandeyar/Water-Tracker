@@ -162,41 +162,31 @@ def add_water():
     
 #############################################
 
-def month_query(user_id):
-    """organizes data by month"""
+def chart_query(user_id, filter_name):
+    """charts filter"""
 
-    line_chart = db.session.query(func.date_trunc('month', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('month', Water.time_updated)).order_by(func.date_trunc('month', Water.time_updated)).filter(Water.user_id==user_id).all()
+    filter_dict = {
+        'months': ('month', '%b %Y'),
+        'weeks': ('week', '%D'),
+        'days': ('day', '%D'),
+    }
+    trunc_type, time_format = filter_dict[filter_name]
 
-    time_parameter = []  
-    qty = []
-    for item in line_chart:
-        time_parameter.append(item[0].strftime('%b %Y'))
-        qty.append(item[1])
-
-    return time_parameter, qty
-
-def week_query(user_id):
-    """organizes data by week"""
-
-    line_chart = db.session.query(func.date_trunc('week', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('week', Water.time_updated)).order_by(func.date_trunc('week', Water.time_updated)).filter(Water.user_id==user_id).all()
-
-    time_parameter = []  
-    qty = []
-    for item in line_chart:
-        time_parameter.append(item[0].strftime('%D'))
-        qty.append(item[1])
-
-    return time_parameter, qty
-
-def day_query(user_id):
-    """organizes data by day"""
-
-    line_chart = db.session.query(func.date_trunc('day', Water.time_updated),func.sum(Water.ounces)).group_by(func.date_trunc('day', Water.time_updated)).order_by(func.date_trunc('day', Water.time_updated)).filter(Water.user_id==user_id).all()
+    line_chart = (
+        db.session.query(
+            func.date_trunc(trunc_type, Water.time_updated),
+            func.sum(Water.ounces)
+        )
+        .group_by(func.date_trunc(trunc_type, Water.time_updated))
+        .order_by(func.date_trunc(trunc_type, Water.time_updated))
+        .filter(Water.user_id==user_id)
+        .all()
+    )
 
     time_parameter = []  
     qty = []
     for item in line_chart:
-        time_parameter.append(item[0].strftime('%D'))
+        time_parameter.append(item[0].strftime(time_format))
         qty.append(item[1])
 
     return time_parameter, qty
@@ -213,17 +203,7 @@ def line_chart():
     user = User.query.filter_by(user_id=user_id).first()
     user_goal_oz = User.calculate_user_intake(user.weight, user.age)
 
-    if filter_name == 'days':
-
-        time_parameter, qty = day_query(user_id)
-
-    elif filter_name == 'weeks':
-    
-        time_parameter, qty = week_query(user_id)
-
-    elif filter_name == 'months':
-    
-        time_parameter, qty = month_query(user_id)
+    time_parameter, qty = chart_query(user_id, filter_name)
 
     return jsonify(user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
 
