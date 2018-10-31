@@ -200,8 +200,16 @@ def line_chart():
     filter_name = request.args.get('filter_name')
     print("filter name is", filter_name)
 
-    user = User.query.filter_by(user_id=user_id).first()
+    user = User.query.filter_by(user_id=user_id).one()
     user_goal_oz = User.calculate_user_intake(user.weight, user.age)
+
+    goal_multiplier = {
+        'months': 30,
+        'weeks': 7,
+        'days': 1,
+    }
+
+    user_goal_oz = user_goal_oz*goal_multiplier[filter_name]
 
     time_parameter, qty = chart_query(user_id, filter_name)
 
