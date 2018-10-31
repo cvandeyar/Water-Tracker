@@ -1,13 +1,20 @@
 
 "use strict";
 
+let myChart = null;
+
 function updateChart(results){
     // console.dir(results);
     let ctx = document.getElementById("lineChart").getContext('2d');
-    let myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [{
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [
+                {
                     label: 'qty',
                     data: results['qty'],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -20,24 +27,27 @@ function updateChart(results){
                     radius: 0,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255,99,132,1)',
-                }],
+                }
+            ],
             labels: results['time_parameter']
         },
 
         options: {
             scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    },
-                    scaleLabel: {
-                         display: true,
-                         labelString: 'Qty',
-                         fontSize: 20 
-                  }
-            }]            
-        }  
-    }
+                yAxes: [
+                    {
+                        ticks: {
+                            beginAtZero:true
+                        },
+                        scaleLabel: {
+                             display: true,
+                             labelString: 'Qty',
+                             fontSize: 20 
+                        },
+                    }
+                ]            
+            }  
+        }
     });
 }
 
@@ -54,9 +64,9 @@ function updateChartInfo(evt){
 $('#stat-submit').on('submit', updateChartInfo)
 
 
-// $(document).one('ready', function(){
-//     let formInputs = {
-//         filter_name: 'months',
-//     };
-//     $.get('/line_chart.json', formInputs, updateChart);
-// });
+$(document).one('ready', function(){
+    let formInputs = {
+        filter_name: 'months',
+    };
+    $.get('/line_chart.json', formInputs, updateChart);
+});
