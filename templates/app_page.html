@@ -53,17 +53,14 @@
             Current Water Count: {{ total_water_today }} Oz ({{ total_cups_today }} Cups)
         </div>
 
-<script src="/static/js/daily_goal.js"></script>
+    <script src="/static/js/daily_goal.js"></script>
 
 
- <!-- add motivational messages when getting close to goal or goal is met -->
-
-
-        
-
-<!-- want to give msg that they're getting close or met their goal -->
-
-        
+<form id='pie-chart'>
+    <div>
+        <input id='pie' type="submit" value="Pie Chart">
+    </div>
+</form> 
 
     </div>
 </div>
@@ -75,7 +72,6 @@
             <div>
                 <select id='stats' name='filter_name' required>
                     <option disabled selected value>Filter by</option>
-                    <option value='today'>Today </option>
                     <option value='days'>Days</option>
                     <option value='weeks'>Weeks</option>
                     <option value='months'>Months</option>
@@ -88,193 +84,17 @@
     </div>
 </div>
 
+<!-- line chart -->
+<canvas id="lineChart" width="400" height="400"></canvas>
 
-<canvas id="myChart" width="400" height="400"></canvas>
-
-<!-- <script>
-    const time_parameter = {{ time_parameter|tojson }}
-    const qty = {{ qty|tojson }}
-    const user_goal_oz = {{ user_goal_oz }}
-</script> -->
-
-<script src="/static/js/stat_page.js"></script>
-
-<!-- <script>
-    "use strict";
-    let ctx = document.getElementById("myChart").getContext('2d');
-    let myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {{ time_parameter|tojson }}, 
-            datasets: [{
-            label: "Daily Water Intake",
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            data: {{ qty|tojson }} 
-        }],
-    },
-        options: {
-            scales: {
-                xAxes: [{
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true
-                }]
-            }
-            ,
-            animation: {
-            duration: 0, // general animation time
-        },
-        hover: {
-            animationDuration: 0, // duration of animations when hovering an item
-        },
-        responsiveAnimationDuration: 0, // animation duration after a resize
-    }
-    });
-</script> -->
+<script src="/static/js/line_chart.js"></script>
 
 
+<!-- pie chart -->
+<canvas id="pieChart" width="400" height="400"></canvas>
+<script src="/static/js/pie_chart.js"></script>
 
 
-
-<!-- <script>
-    "use strict";
-    let ctx = document.getElementById("myChart").getContext('2d');
-    let myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ time_parameter|tojson }}, 
-            datasets: [{
-            label: "Daily Water Intake",
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            data: {{ qty|tojson }} 
-        }],
-    },
-        options: {
-            scales: {
-                xAxes: [{
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true
-                }]
-            }
-        //     ,
-        //     animation: {
-        //     duration: 0, // general animation time
-        // },
-        // hover: {
-        //     animationDuration: 0, // duration of animations when hovering an item
-        // },
-        // responsiveAnimationDuration: 0, // animation duration after a resize
-    }
-    });
-</script> -->
-
-
-<!-- <script>
-    "use strict";
-    let ctx = document.getElementById("myChart").getContext('2d');
-    let myChart = new Chart(ctx, {
-            type: 'horizontalBar',
-            data: {
-                datasets: [{
-                    label: 'qty',
-                    data: {{ qty|tojson }},
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255,99,132,1)',
-                },
-                {
-                    label: 'goal',
-            data: Array.apply(null, new Array(5)).map(Number.prototype.valueOf, {{ user_goal_oz }}),
-            fill: false,
-            radius: 0,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-                }],
-            labels: {{ time_parameter|tojson }}
-        },
-       
-        // options: {
-        //     scales: {
-        //         xAxes: [{
-        //             stacked: true
-        //         }],
-        //         yAxes: [{
-        //             stacked: true
-        //         }]
-        //     }}
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    },
-                    scaleLabel: {
-                         display: true,
-                         labelString: 'Qty',
-                         fontSize: 20 
-                  }
-            }]            
-        }  
-}
-    });
-</script> -->
-
-
-
-
-<!-- <script>
-    "use strict";
-    let ctx = document.getElementById("myChart").getContext('2d');
-    let myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                datasets: [{
-                    label: 'qty',
-                    data: {{ qty|tojson }},
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255,99,132,1)',
-                },
-                {
-                    label: 'goal',
-                    data: Array.apply(null, new Array(-100, 0, 100)).map(Number.prototype.valueOf, {{ user_goal_oz }}),
-                    type: 'line',
-                    fill: false,
-                    radius: 10,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                }],
-            labels: {{ time_parameter|tojson }}
-        },
-       
-        options: {
-            scales: {
-                xAxes: [{
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true
-                }]
-            }}
-    });
-</script> -->
 
 
 
@@ -282,29 +102,7 @@
 
 
 <!-- this is for grabbing the city every time you submit a drink -->
-<!-- <script>
-    
-    // fetch("https://ipinfo.io/json?token={{ IP_token }}").then(function(response){
-    //     response.json().then((data)=>{
-    //         console.log(data)
-    //     })
-    // })
-    
-    
-    // const getIPInfo = async () => {
-    //     const response = await fetch("https://ipinfo.io/json?token={{ IP_token }}")
-    //     const data = await response.json()
-    //     console.log(data, data['city'])
-    // }
-    // getIPInfo();
-    
-    
-    // const getIPInfo = async () => {
-    //     const response = await fetch("https://ipinfo.io/json?token={{ IP_token }}")
-    //     const data = await response.json()
-    //     return data['city'];
-    // }
-    // getIPInfo().then((city) => console.log(city));
+<script>
     
     const getIPInfo = async () => {
         const response = await fetch("https://ipinfo.io/json?token={{ IP_token }}")
@@ -314,7 +112,8 @@
     // getIPInfo().then((city) => console.log(city));
     function rerouteBack(response){
         console.log(response)
-        window.location.reload();
+        // window.location.reload();
+        $('#daily_goal')[0].innerText = response;
     }
     async function submitWater(evt) {
         evt.preventDefault();
@@ -328,8 +127,7 @@
            rerouteBack);
     };
     $("#add-water").on("submit", submitWater);
-</script> -->
-
+</script>
 
 
 

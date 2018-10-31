@@ -28,9 +28,9 @@ def load_water():
     for row in open(water_filename):
         row = row.rstrip()
 
-        water_intake_id, time_updated, ounces, user_id = row.split('|')
+        water_intake_id, time_updated, ounces, user_id, postal = row.split('|')
 
-        water = Water(water_intake_id=water_intake_id, time_updated=time_updated, ounces=ounces, user_id=user_id)
+        water = Water(water_intake_id=water_intake_id, time_updated=time_updated, ounces=ounces, user_id=user_id, postal=postal)
 
         db.session.add(water)
 

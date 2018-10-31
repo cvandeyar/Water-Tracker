@@ -2,7 +2,7 @@
 {% block content %}
 
 
-<div> STAT PAGE </div>
+<!-- <div> STAT PAGE </div>
 
 <canvas id="myChart" width="200" height="200"></canvas>
 
@@ -12,6 +12,52 @@
     const user_goal_oz = {{ user_goal_oz }}
 </script>
 
-<script src="/static/js/stat_page.js"></script>
+<script src="/static/js/line_chart.js"></script> -->
+
+
+<canvas id="pieChart" width="200" height="200"></canvas>
+
+<script>
+    const postal = {{ postal|tojson }}
+    const qty = {{ qty|tojson }}
+</script>
+
+<!-- <script src="/static/js/pie_chart.js"></script> -->
+
+<script>
+    "use strict";
+    let ctx = document.getElementById("pieChart").getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['1', '2', '3'],
+            datasets: [{
+            label: "Daily Water Intake",
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            data: [5, 10, 15], 
+        }],
+    },
+        options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+            ,
+            animation: {
+            duration: 0, // general animation time
+        },
+        hover: {
+            animationDuration: 0, // duration of animations when hovering an item
+        },
+        responsiveAnimationDuration: 0, // animation duration after a resize
+    }
+    });
+</script>
+
 
 {% endblock %}

@@ -54,7 +54,7 @@ class Water(db.Model):
     # change ounces to qty!!!!!!!!
     ounces = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    postal = db.Column(db.Integer, nullable=True)
+    postal = db.Column(db.Integer, nullable=False)
     user = db.relationship('User', backref='water')
 
     def __repr__(self):
