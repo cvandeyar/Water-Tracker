@@ -4,7 +4,7 @@ from sqlalchemy import func
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, session, flash, jsonify
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import localtime
 import pytz
 from model import connect_to_db, db, User, Water
@@ -183,13 +183,44 @@ def chart_query(user_id, filter_name):
         .all()
     )
 
+
+    prev_date_time = None
     time_parameter = []  
     qty = []
+
     for item in line_chart:
+        if prev_date_time!=None:
+            cur_date = next_date(prev_date_time, trunc_type)
+            while cur_date<item[0]:
+                time_parameter.append(cur_date.strftime(time_format))
+                qty.append(0)
+                cur_date=next_date(cur_date, trunc_type)
         time_parameter.append(item[0].strftime(time_format))
         qty.append(item[1])
+        prev_dt = item[0]
+
 
     return time_parameter, qty
+
+def next_date(date_time_input, interval):
+    """updates goals total by filter"""
+
+    if interval=='day':
+        return date_time_input+timedelta(days=1)
+
+    if interval=='week':
+        return date_time_input+timedelta(days=7)
+
+    if interval=='month':
+
+        which_month = date_time_input.split()
+
+        if which_month[0] in ['Jan', 'Mar', 'May', 'July', 'Aug', 'Oct', 'Dec']:
+            return date_time_input+timedelta(days=31)
+        elif date_time_input[0] in ['Feb']:
+            return date_time_input+timedelta(days=28)
+        else:
+            return date_time_input+timedelta(days=30)
 
 #############################################
 @app.route('/line_chart.json')
