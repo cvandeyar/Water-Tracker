@@ -183,21 +183,22 @@ def chart_query(user_id, filter_name):
         .all()
     )
 
-
     prev_date_time = None
     time_parameter = []  
     qty = []
 
     for item in line_chart:
+
         if prev_date_time!=None:
             cur_date = next_date(prev_date_time, trunc_type)
+
             while cur_date<item[0]:
                 time_parameter.append(cur_date.strftime(time_format))
                 qty.append(0)
                 cur_date=next_date(cur_date, trunc_type)
         time_parameter.append(item[0].strftime(time_format))
         qty.append(item[1])
-        prev_dt = item[0]
+        prev_date_time = item[0]
 
 
     return time_parameter, qty
@@ -208,16 +209,16 @@ def next_date(date_time_input, interval):
     if interval=='day':
         return date_time_input+timedelta(days=1)
 
-    if interval=='week':
+    elif interval=='week':
         return date_time_input+timedelta(days=7)
 
-    if interval=='month':
+    elif interval=='month':
+        
+        which_month = date_time_input.month
 
-        which_month = date_time_input.split()
-
-        if which_month[0] in ['Jan', 'Mar', 'May', 'July', 'Aug', 'Oct', 'Dec']:
+        if which_month in [1, 3, 5, 7, 8, 10, 12]:
             return date_time_input+timedelta(days=31)
-        elif date_time_input[0] in ['Feb']:
+        elif which_month in [2]:
             return date_time_input+timedelta(days=28)
         else:
             return date_time_input+timedelta(days=30)
@@ -243,6 +244,7 @@ def line_chart():
     user_goal_oz = user_goal_oz*goal_multiplier[filter_name]
 
     time_parameter, qty = chart_query(user_id, filter_name)
+    print(chart_query)
 
     return jsonify(user_goal_oz=user_goal_oz, time_parameter=time_parameter, qty=qty)
 

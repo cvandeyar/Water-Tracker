@@ -66,7 +66,7 @@ $('#stat-submit').on('submit', updateChartInfo)
 
 $(document).one('ready', function(){
     let formInputs = {
-        filter_name: 'months',
+        filter_name: 'days',
     };
     $.get('/line_chart.json', formInputs, updateChart);
 });
