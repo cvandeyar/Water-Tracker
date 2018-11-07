@@ -67,6 +67,25 @@ class Water(db.Model):
 
 #################################################
 
+# def test_data():
+
+#     User.query.delete()
+#     Water.query.delete()
+
+#     nancy = User(user_id='nancydrew@gmail.com', fname='Nancy', lname='Drew', weight=135, age=25, email='nancydrew@gmail.com', password='n', time_zone='US/Pacific')
+
+#     water1 = Water(water_intake_id=1,  
+#         time_updated='2018-09-01 01:01:00.000000',   
+#         ounces=75, 
+#         user_id=1, 
+#         postal=94560
+#         )
+
+#     db.session.add_all([nancy, water1])
+#     db.session.commit()
+
+#################################################
+
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 

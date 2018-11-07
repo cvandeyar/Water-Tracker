@@ -26,7 +26,7 @@ def index():
     if session.get('user_id') != None:
         return redirect('/app_page')
     else:
-        return render_template("homepage.html")
+        return render_template("index.html")
 
 
 @app.route('/register')
@@ -214,14 +214,9 @@ def next_date(date_time_input, interval):
 
     elif interval=='month':
         
-        which_month = date_time_input.month
-
-        if which_month in [1, 3, 5, 7, 8, 10, 12]:
-            return date_time_input+timedelta(days=31)
-        elif which_month in [2]:
-            return date_time_input+timedelta(days=28)
-        else:
-            return date_time_input+timedelta(days=30)
+        a = date_time_input+timedelta(days=31)
+        next_month = a.replace(day=1)
+        return next_month
 
 #############################################
 @app.route('/line_chart.json')

@@ -1,39 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!-- <nav class="navbar navbar-light bg-light">
+  <div class="navbar-brand mb-0 h3">Date: {{ current_date }}</div>
+</nav>
+ -->
+<div class='row'>
+    <div class='col'>
+        <h1 id='title'>Water Tracker</h1>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col">
+<div class='row'>
+    <div class='col'>
+    <div>
         <div>
-            Today's Date: {{ current_date }} <br>
-            Timezone: {{ time_zone }} DELETE LATER!!!!!
+            Today's Date: {{ current_date }}
         </div>
 
         <div>
-            <h2>Hi, {{ fname }}!</h2>
-            Hope you're keeping hydrated!😁
+            <h4>Hi, {{ fname }}!</h4>
+            <!-- Hope you're keeping hydrated!😁 -->
         </div>
         <div id='goal_num'>
             Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
         </div>
     </div>
-</div>
 
-
-
-<br>
-
-
-<div class="row">
-    <div class="col">
+<!-- <br> -->
+<!-- 
         <div>
             Water Intake...
-        </div>
-
+        </div> -->
+    <div class='col'>
         <form id="add-water">
             <div>
                 <select id='qty-field' name='drink' required>
-                    <option disabled selected value> -- select an option -- </option>
+                    <option disabled selected value> Drink </option>
                     <option value='2'> 2 Oz (1/4 Cup)</option>
                     <option value='4'> 4 Oz (1/2 Cup)</option>
                     <option value='6'> 6 Oz (3/4 Cup)</option>
@@ -48,26 +51,18 @@
             </div>
         </form>  
 
-        
+  
         <div id='daily_goal'>
             Current Water Count: {{ total_water_today }} Oz ({{ total_cups_today }} Cups)
         </div>
 
-    <script src="/static/js/daily_goal.js"></script>
-
-
-<form id='pie-chart'>
-    <div>
-        <input id='pie' type="submit" value="Pie Chart">
+    <!-- <script src="/static/js/daily_goal.js"></script> -->
     </div>
-</form> 
-
     </div>
 </div>
 
 <br>
-<div class='row'>
-    <div class='col'>
+
         <form id='stat-submit'>
             <div>
                 <select id='stats' name='filter_name' required>
@@ -76,29 +71,29 @@
                     <option value='weeks'>Weeks</option>
                     <option value='months'>Months</option>
                 </select>
-            </div>
-            <div>
-                <input type="submit" value='Stats'>
+
+                <input type="submit" value='FILTER'>
             </div>
         </form>
-    </div>
-</div>
-
-<!-- line chart -->
-<canvas id="lineChart" width="400" height="400"></canvas>
-
-<script src="/static/js/line_chart.js"></script>
-
-
-<!-- pie chart -->
-<canvas id="pieChart" width="400" height="400"></canvas>
-<script src="/static/js/pie_chart.js"></script>
 
 
 
+        <!-- line chart -->
+        <canvas id="lineChart" width="400" height="400"></canvas>
+
+        <script src="/static/js/line_chart.js"></script>
 
 
+        <form id='pie-chart'>
+            <div>
+                <input id='pie' type="submit" value="UPDATE">
+            </div>
+        </form> 
 
+<!-- radar chart -->
+        <canvas id="pieChart" width="400" height="400"></canvas>
+
+        <script src="/static/js/pie_chart.js"></script>
 
 
 <!-- this is for grabbing the city every time you submit a drink -->
@@ -127,10 +122,8 @@
            rerouteBack);
     };
     $("#add-water").on("submit", submitWater);
+
 </script>
-
-
-
 
 <div>
     <form action='/logout'>
@@ -139,7 +132,5 @@
         </div>
     </form>
 </div>
-
-
 
 {% endblock %}

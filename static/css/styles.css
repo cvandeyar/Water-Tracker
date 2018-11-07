@@ -1,0 +1,21 @@
+.container #title {
+    justify-content: center;
+    display: flex;
+    
+}
+
+#stuff {
+    justify-content: center;
+    display: flex;
+}
+
+#stuff2 {
+    justify-content: center;
+    display: flex;
+}
+
+canvas {
+    height: 50px;
+    width: 50px;
+}
+
