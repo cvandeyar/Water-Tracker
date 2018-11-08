@@ -1,3 +1,7 @@
+<head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
 {% extends 'base.html' %}
 {% block content %}
 
@@ -6,98 +10,82 @@
 <div>
 <h1>Register</h1>
 
-
 <form action="/register" method="POST">
+    <div class="row">
+        <!-- <div class="col"> -->
+        <div class="form-group">
+            <label>
+                First Name
+                <input type="text" name="fname" class="form-control" placeholder="First Name" required>
+            </label>
+        </div>
+        <!-- </div> -->
 
-<div class="row">
-    <!-- <div class="col"> -->
-    <div class="form-group">
-        <label>
-            First Name
-            <input type="text" name="fname" class="form-control" placeholder="First Name" required>
-        </label>
-    </div>
-    <!-- </div> -->
-
-    <!-- <div class="col"> -->
-    <div class="form-group">
-        <label>
-            Last Name
-            <input type="text" name="lname" class="form-control" required>
-        </label>
-    </div>
-    <!-- </div> -->
-</div>
-
-<div class="row">
-    <!-- <div class="col"> -->
-    <div class="form-group">
-        <label>
-            Weight (lbs)
-            <input type="number" name="weight" class="form-control" >
-        </label>
+        <!-- <div class="col"> -->
+        <div class="form-group">
+            <label>
+                Last Name
+                <input type="text" name="lname" class="form-control" placeholder="Last Name"required>
+            </label>
+        </div>
+        <!-- </div> -->
     </div>
 
-    <div class="form-group">
-        <label>
-            Age
-            <input type="number" name="age" class="form-control" required>
-        </label>
-    </div>
-    <!-- </div> -->
-</div>
+    <div class="row">
+        <!-- <div class="col"> -->
+        <div class="form-group">
+            <label>
+                Weight (lbs)
+                <input type="number" name="weight" class="form-control" placeholder="Weight" required>
+            </label>
+        </div>
 
-<div class="row">
-    <div class="form-group">
-        <label>
-            Email
-            <input type="email" name="email" class="form-control" required>
-        </label>
-    </div>
-
-    <div class="form-group">
-        <label>
-            Password
-            <input type="password" name="password" class="form-control" required>
-        </label>
+        <div class="form-group">
+            <label>
+                Age
+                <input type="number" name="age" class="form-control" placeholder="Age" required>
+            </label>
+        </div>
+        <!-- </div> -->
     </div>
 
+    <div class="row">
+        <div class="form-group">
+            <label>
+                Email
+                <input type="email" name="email" class="form-control" placeholder="Email" required>
+            </label>
+        </div>
 
-<!-- i want to make this a loop -->
-    <div class="form-group">
-        <label>
-            Timezone
-            <select name='timezone' required>
-                <option disabled selected value> -- select an option -- </option>
+        <div class="form-group">
+            <label>
+                Password
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </label>
+        </div>
 
-                <ul>
-                {% for timezone in timezones %}
-                    <li><option value={{ timezone }}>{{ timezone }}</option></li>
-                {% endfor %}
-                </ul>
+        <div class="form-group">
+            <label>
+                Timezone
+                <select name='timezone' required>
+                    <option disabled selected value> -- select an option -- </option>
 
-        </label>
+                    <ul>
+                    {% for timezone in timezones %}
+                        <li><option value={{ timezone }}>{{ timezone }}</option></li>
+                    {% endfor %}
+                    </ul>
+            </label>
+        </div>
+
+        <br><br>
+
+        <div class="form-group">
+        	<input type="submit" value="Create Account">
+        </div>
     </div>
-
-    <div class="form-group">
-    	<input type="submit" value="CREATE ACCOUNT">
-    </div>
-</div>
-
-
 </form>
 
-
-
 </div>
-
-
-
-
-
-
-
-
-
 
 {% endblock %}

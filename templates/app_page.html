@@ -1,38 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- <nav class="navbar navbar-light bg-light">
-  <div class="navbar-brand mb-0 h3">Date: {{ current_date }}</div>
+<nav class="navbar navbar-light bg-light">
+    <div class="navbar-brand">
+        Water Tracker
+    </div>
+    <div id='goal_num'>
+                Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
+            </div>
+    <form class="form-inline" action='/logout'>
+        <input class="form-control mr-sm-2" type="submit" value="Logout">
+    </form>
+
 </nav>
- -->
-<div class='row'>
-    <div class='col'>
-        <h1 id='title'>Water Tracker</h1>
-    </div>
-</div>
 
 <div class='row'>
-    <div class='col'>
-    <div>
-        <div>
-            Today's Date: {{ current_date }}
-        </div>
+    <div class='col-12'>
+        <!-- <h1 id='title'>Water Tracker</h1> -->
 
         <div>
-            <h4>Hi, {{ fname }}!</h4>
-            <!-- Hope you're keeping hydrated!😁 -->
-        </div>
-        <div id='goal_num'>
-            Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
-        </div>
-    </div>
+            <div>
+                Date: {{ current_date }}
+            </div>
 
-<!-- <br> -->
-<!-- 
-        <div>
-            Water Intake...
-        </div> -->
-    <div class='col'>
+            <div>
+                <h4>Hi, {{ fname }}!</h4>
+                <!-- Hope you're keeping hydrated!😁 -->
+            </div>
+            <!-- <div id='goal_num'>
+                Daily Goal: {{ user_goal_oz }} Oz (About {{ user_goal_cups }} Cups)
+            </div> -->
+        </div>
+
+        <div id='daily_goal'>
+            Current Water Count: {{ total_water_today }} Oz ({{ total_cups_today }} Cups)
+        </div>
+
         <form id="add-water">
             <div>
                 <select id='qty-field' name='drink' required>
@@ -44,25 +47,16 @@
                     <option value='12'> 12 Oz (1.5 Cups)</option>
                     <option value='16'> 16 Oz (2 Cups)</option>
                 </select>
-            </div>
-
-            <div>
+            
                  <input id='submit_water' type="submit" value="SUBMIT">
             </div>
         </form>  
-
-  
-        <div id='daily_goal'>
-            Current Water Count: {{ total_water_today }} Oz ({{ total_cups_today }} Cups)
-        </div>
-
-    <!-- <script src="/static/js/daily_goal.js"></script> -->
-    </div>
     </div>
 </div>
 
 <br>
-
+<div class='row'>
+    <div class='col-6'>
         <form id='stat-submit'>
             <div>
                 <select id='stats' name='filter_name' required>
@@ -76,14 +70,13 @@
             </div>
         </form>
 
-
-
         <!-- line chart -->
-        <canvas id="lineChart" width="400" height="400"></canvas>
+        <canvas id="lineChart" width="200" height="200"></canvas>
 
         <script src="/static/js/line_chart.js"></script>
+    </div>
 
-
+    <div class='col-6'>
         <form id='pie-chart'>
             <div>
                 <input id='pie' type="submit" value="UPDATE">
@@ -91,10 +84,12 @@
         </form> 
 
 <!-- radar chart -->
-        <canvas id="pieChart" width="400" height="400"></canvas>
+        <canvas id="pieChart" width="200" height="200"></canvas>
 
         <script src="/static/js/pie_chart.js"></script>
-
+    
+    </div>
+</div>
 
 <!-- this is for grabbing the city every time you submit a drink -->
 <script>
@@ -125,12 +120,12 @@
 
 </script>
 
-<div>
+<!-- <div>
     <form action='/logout'>
         <div>
             <input type="submit" value="LOGOUT">
         </div>
     </form>
-</div>
+</div> -->
 
 {% endblock %}
