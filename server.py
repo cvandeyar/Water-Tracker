@@ -1,5 +1,6 @@
 """Water Tracker"""
 
+import os
 from sqlalchemy import func
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, session, flash, jsonify
@@ -8,13 +9,14 @@ from datetime import datetime, timedelta
 from time import localtime
 import pytz
 from model import connect_to_db, db, User, Water
-import config
+# import config
 
 
 
 app = Flask(__name__)
 
-app.secret_key = config.app_secret_key
+# app.secret_key = config.app_secret_key
+app.secret_key = os.environ['APP_SECRET_KEY']
 
 app.jinja_env.undefined = StrictUndefined
 
@@ -124,7 +126,8 @@ def app_page():
 
     user_goal_cups = round((user_goal_oz/8), 2)
 
-    IP_token = config.token
+    # IP_token = config.token
+    IP_token = os.environ['API_TOKEN']
 
     return render_template("app_page.html", current_date=current_date, total_water_today=total_water_today, total_cups_today=total_cups_today, fname=fname, user_goal_oz=user_goal_oz, user_goal_cups=user_goal_cups, time_zone=time_zone, IP_token=IP_token)
 
