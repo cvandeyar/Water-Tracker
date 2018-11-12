@@ -6,9 +6,12 @@ from model import Water
 from model import connect_to_db, db
 from server import app
 
-def load_users():
-
+def delete_users():
     User.query.delete()
+def delete_water():
+    Water.query.delete()
+
+def load_users():
 
     for row in open(user_filename):
         row = row.rstrip()
@@ -22,8 +25,6 @@ def load_users():
     db.session.commit()
 
 def load_water():
-
-    Water.query.delete()
 
     for row in open(water_filename):
         row = row.rstrip()
@@ -81,8 +82,10 @@ if __name__ == "__main__":
 
     user_filename = 'seed_data/u.user'
     water_filename = 'seed_data/u.water'
-    load_water()
+    delete_water()
+    delete_users()
     load_users()
+    load_water()
     set_val_user_id()
     set_val_water_id()
     # load_bathroom()
