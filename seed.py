@@ -81,8 +81,8 @@ if __name__ == "__main__":
 
     user_filename = 'seed_data/u.user'
     water_filename = 'seed_data/u.water'
-    load_users()
     load_water()
+    load_users()
     set_val_user_id()
     set_val_water_id()
     # load_bathroom()
