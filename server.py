@@ -161,7 +161,7 @@ def add_water():
 
     print('user id', user_id)
     print('current date', current_date)
-    return f'Current Water Count: {total_water_today} Oz ({total_cups_today} Cups)'
+    return f"Today's Water: {total_water_today} Oz ({total_cups_today} Cups)"
     
 #############################################
 
@@ -273,8 +273,7 @@ def pie_chart_data():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    # app.debug = False
-    app.run()
+    # app.debug = True
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
